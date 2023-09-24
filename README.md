@@ -57,3 +57,7 @@ You can learn more in the
 [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started)..
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+1. **react-icons**
+   여러가지 FRONT-END ICON을 모아둔 사이트[react-icons](https://react-icons.github.io/react-icons/)
+   - 설치방법: npm install react-icons --save
