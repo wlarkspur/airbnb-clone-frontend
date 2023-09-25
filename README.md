@@ -58,6 +58,6 @@ You can learn more in the
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-1. **react-icons**
+1. **react-icons** 아이콘 천국
    여러가지 FRONT-END ICON을 모아둔 사이트[react-icons](https://react-icons.github.io/react-icons/)
    - 설치방법: npm install react-icons --save
