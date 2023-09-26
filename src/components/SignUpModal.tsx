@@ -4,6 +4,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  LightMode,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -70,10 +71,12 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
               <Input variant={"filled"} placeholder="Password" />
             </InputGroup>
           </VStack>
-          <Button mt={4} colorScheme="red" w={"100%"}>
-            Log in
-          </Button>
-          <SocialLogin />
+          <LightMode>
+            <Button mt={4} colorScheme="red" w={"100%"}>
+              Log in
+            </Button>
+            <SocialLogin />
+          </LightMode>
         </ModalBody>
       </ModalContent>
     </Modal>

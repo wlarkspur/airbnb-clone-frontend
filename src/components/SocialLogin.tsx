@@ -20,7 +20,12 @@ export default function SocialLogin() {
         <Button w={"100%"} leftIcon={<FaGithub />} colorScheme={"telegram"}>
           Continue with Github
         </Button>
-        <Button w={"100%"} leftIcon={<FaComment />} bgColor={"#F7E600"}>
+        <Button
+          w={"100%"}
+          leftIcon={<FaComment />}
+          bgColor={"#F7E600"}
+          color={"black"}
+        >
           Continue with Kakao
         </Button>
       </VStack>

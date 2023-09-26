@@ -4,6 +4,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  LightMode,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,6 +12,7 @@ import {
   ModalHeader,
   ModalOverlay,
   VStack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import SocialLogin from "./SocialLogin";
 import { FaUserSecret, FaLock } from "react-icons/fa";
@@ -50,10 +52,12 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <Input variant={"filled"} placeholder="Password" />
             </InputGroup>
           </VStack>
-          <Button mt={4} colorScheme="red" w={"100%"}>
-            Log in
-          </Button>
-          <SocialLogin />
+          <LightMode>
+            <Button mt={4} colorScheme="red" w={"100%"}>
+              Log in
+            </Button>
+            <SocialLogin />
+          </LightMode>
         </ModalBody>
       </ModalContent>
     </Modal>
