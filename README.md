@@ -65,4 +65,4 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 2. **theme**
 
-다크 모드, 라이트 모드를 설정하는 chakra UI
+다크 모드, 라이트 모드를 설정하는 chakra UI.
