@@ -9,7 +9,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaStar, FaRegHeart } from "react-icons/fa";
-import RoomSkeleton from "./RoomSkeleton";
 
 interface IRoomProps {
   imageUrl: string;

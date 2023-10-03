@@ -66,3 +66,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 2. **theme**
 
 다크 모드, 라이트 모드를 설정하는 chakra UI..
+
+3. **Fetch** django-cors-headers
+
+django 에서 외부 데이터를 fetch하도록 도와주는 패키지
