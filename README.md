@@ -70,3 +70,8 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 3. **Fetch** django-cors-headers
 
 django 에서 외부 데이터를 fetch하도록 도와주는 패키지
+
+4. **HStack, VStack, Skeleton**
+
+Horizontal, Vertical 속성을 제공하여, flow-direction: column, row 등의 설정을 안해도 되도록 도와준다.
+Skeleton은 로딩 속성을 제공함
