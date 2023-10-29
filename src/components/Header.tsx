@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   HStack,
@@ -13,8 +14,10 @@ import { FaAirbnb, FaMoon, FaSun } from "react-icons/fa";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
 import { Link } from "react-router-dom";
+import useUser from "../lib/useUser";
 
 export default function Header() {
+  const { userLoading, user, isLoggedIn } = useUser();
   const {
     isOpen: isLoginOpen,
     onClose: onLoginClos,
@@ -57,12 +60,20 @@ export default function Header() {
           aria-label="Toggle dar mode" //aria-label은 텍스트 음성읽기 기능을 위함.
           icon={<Icon />}
         />
-        <Button onClick={onLoginOpen}>Log in</Button>
-        <LightMode>
-          <Button onClick={onSignUpOpen} colorScheme="red">
-            Sign up
-          </Button>
-        </LightMode>
+        {!userLoading ? (
+          !isLoggedIn ? (
+            <>
+              <Button onClick={onLoginOpen}>Log in</Button>
+              <LightMode>
+                <Button onClick={onSignUpOpen} colorScheme="red">
+                  Sign up
+                </Button>
+              </LightMode>
+            </>
+          ) : (
+            <Avatar name={user?.name} src={user?.avatar} size={"md"} />
+          )
+        ) : null}
       </HStack>
       <LoginModal isOpen={isLoginOpen} onClose={onLoginClos} />
       <SignUpModal isOpen={isSignUpOpen} onClose={onSignUpClose} />

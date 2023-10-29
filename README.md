@@ -75,3 +75,28 @@ django 에서 외부 데이터를 fetch하도록 도와주는 패키지
 
 Horizontal, Vertical 속성을 제공하여, flow-direction: column, row 등의 설정을 안해도 되도록 도와준다.
 Skeleton은 로딩 속성을 제공함
+
+5. **Authentication**
+
+5-1. Django, 페이지를 방문할 때마다 Browser는 django에게 session id를 자동으로 전송한다. 어떤 cookie를 어떤 사이트에 전송할 지 알 수 있는 방법은 cookie를 만든 사이트의 domain에 달려있다. 이러한 이유로 Django 백엔드가 google.com 도메인이 생선한 cookie를 받지 않는 것이다.
+
+브라우저 Website에 가서 Domain을 보고, 해당 Domain이 만든 cookie만 전송하는 역할을 한다.
+\*TIP: Javascript에 의해 만들어진 요청은 Cookie를 자동으로 전송하지 않는다.
+Backend부분으로 가서 config > settings.py 에서 "CORS_ALLOW_CREDENTIALS = True"를 추가해줘야 한다.
+\*Browser는 Browser를 통한 페이지 이동시 자동으로 서버에 Cookie를 전송하지만, Javascript를 이용할 경우 Cookie는 자동으로 서버에 전송되지 않는다. api > axios에게 credential를 보내라고 수동을 입력해줘야 정상적으로 작동한다. -하기 참고-
+
+```javascript
+const instance = axios.create({
+  baseURL: "http://127.0.0.1:8000/api/v1/",
+  withCredentials: true,
+});
+```
+
+이에 대응할 수 있도록 Backend에서도 아래와 같이 config > settings.py 에 코드를 추가해줘야 한다.
+이로써 domain으로부터 fetch를 하고 credentail를 받을 수 있게 된다.
+
+```python
+CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000"]
+
+CORS_ALLOW_CREDENTIALS = True
+```
