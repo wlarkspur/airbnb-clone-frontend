@@ -100,3 +100,10 @@ CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000"]
 
 CORS_ALLOW_CREDENTIALS = True
 ```
+
+6. **CSRF (Cross Site Request Forgery )**
+   웹 어플리케이션 취약점 중 하나로 인터넷사용자가 자신의 의지와는 무관하게 공격자가 의도한 행위를 특정 웹사이트에 요청하게 만드는 공격이다.
+   대표적인 방어법 2가지
+1. Referrer 검증
+   Backend 단에서 request의 referrer를 확인하여 domain이 일치하는지 검증하는 방법으로 이것만으로도 대부분의 CSRF공격을 방어할 수 있지만 페이지에 XSS 취약점이 있는 경우 CSRF공격에 취약할 수 있다.
+1. Security Token 사용
