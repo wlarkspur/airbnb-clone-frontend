@@ -107,3 +107,8 @@ CORS_ALLOW_CREDENTIALS = True
 1. Referrer 검증
    Backend 단에서 request의 referrer를 확인하여 domain이 일치하는지 검증하는 방법으로 이것만으로도 대부분의 CSRF공격을 방어할 수 있지만 페이지에 XSS 취약점이 있는 경우 CSRF공격에 취약할 수 있다.
 1. Security Token 사용
+
+1. **OAuth**
+   1. Github 사용자 인증에 User가 redirect된다.
+   2. User는 다시 Github로부터 개발자 페이지로 redirect된다.
+   3. access token을 가지고 API에 접근하게 된다.
