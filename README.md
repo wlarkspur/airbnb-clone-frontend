@@ -109,6 +109,24 @@ CORS_ALLOW_CREDENTIALS = True
 1. Security Token 사용
 
 1. **OAuth**
+
    1. Github 사용자 인증에 User가 redirect된다.
    2. User는 다시 Github로부터 개발자 페이지로 redirect된다.
    3. access token을 가지고 API에 접근하게 된다.
+
+1. **react-hook-from**
+   login, password, form 의 기능을 쉽게 구현하도록 해주는 라이브러리로, validation 기능도 지원하며 errors 메시지를 보낼수도 있다.
+
+   (예시)
+
+```javascript
+const {
+   register,
+   handleSubmit,
+   formState: { errors },
+ } = useForm<IForm>();
+ const onSubmit = (data: IForm) => {
+   console.log(data);
+ };
+ console.log(errors);
+```
