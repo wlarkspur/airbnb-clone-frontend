@@ -135,3 +135,4 @@ const {
    API로 어떤 데이터를 보내는 것을 mutation이라 한다.
    - useQuery: 함수를 지켜보다 함수가 로딩중이거나 데이터를 리턴 혹은 에러가 발생하면 useQuery의 역할이 시작된다.
    - useMutation: mutation 함수를 가지고 useQuery의 역할을 한다.
+   - recap
