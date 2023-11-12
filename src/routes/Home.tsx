@@ -4,7 +4,6 @@ import RoomSkeleton from "../components/RoomSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { getRooms } from "../api";
 import { IRoomList } from "../types";
-import { useEffect } from "react";
 
 export default function Home() {
   const { isLoading, data } = useQuery<IRoomList[]>(["rooms"], getRooms);

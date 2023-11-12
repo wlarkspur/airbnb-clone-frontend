@@ -14,7 +14,7 @@ export default function KakaoConfirm() {
     const code = params.get("code");
     if (code) {
       const status = await kakaoLogIn(code);
-      if (status == 200) {
+      if (status === 200) {
         toast({
           status: "success",
           title: "Welcome",
