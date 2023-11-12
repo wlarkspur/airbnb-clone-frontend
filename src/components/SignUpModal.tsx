@@ -60,7 +60,8 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
         title: "에러",
         description: apiErrorMessage,
         status: "error",
-        position: "top",
+        position: "bottom-right",
+        isClosable: true,
       });
     },
   });
