@@ -8,7 +8,6 @@ export default function SocialLogin() {
     response_type: "code",
   };
   const params = new URLSearchParams(kakaoParams).toString();
-  console.log(params);
   return (
     <Box mb={4}>
       <HStack my={8}>

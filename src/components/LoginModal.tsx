@@ -20,12 +20,7 @@ import SocialLogin from "./SocialLogin";
 import { FaUserSecret, FaLock } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  IUsernameLoginError,
-  IUsernameLoginSuccess,
-  IUsernameLoginVariables,
-  usernameLogIn,
-} from "../api";
+import { usernameLogIn } from "../api";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -66,7 +61,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const onSubmit = ({ username, password }: IForm) => {
     mutation.mutate({ username, password });
   };
-  console.log(errors);
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />
