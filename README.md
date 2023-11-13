@@ -133,7 +133,37 @@ const {
 
 9. **query, mutation**
    API로 어떤 데이터를 보내는 것을 mutation이라 한다.
+
    - useQuery: 함수를 지켜보다 함수가 로딩중이거나 데이터를 리턴 혹은 에러가 발생하면 useQuery의 역할이 시작된다.
    - useMutation: mutation 함수를 가지고 useQuery의 역할을 한다.
    - useQuery는 api를 모니터링하면서 특정 함수(getMe)를 가지고와서 isLoading, isError, data 가 있는지 알려주는 역할을 한다.
    - useQuery는 mutation과 유사하다. mutation함수를 가지고 mutation의 state를 알려주는 역할은 한다.
+
+10. **ProtectedPage**
+    uploadRoom 페이지는 is_host만이 제어권을 가지고 방을 업로드할 수 있어야한다.
+    그래서 다음과 같이 비로그인 사용자의 링크 연결을 "/"(Home)으로 리다이렉트 해줘야한다.
+
+```javascript
+interface IProtectedPageProps {
+  children: React.ReactNode;
+}
+
+export default function ProtectedPage({ children }: IProtectedPageProps) {
+  const { isLoggedIn, userLoading } = useUser();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!userLoading) {
+      if (!isLoggedIn) {
+        navigate("/");
+      }
+    }
+  }, [userLoading, isLoggedIn, navigate]);
+  return <>{children}</>;
+}
+```
+
+11. **Chakra, FormControl**
+    Chakra UI는 Form을 단순하고 빠르게 만들수 있도록 라이브러리를 제공해준다.
+1. <FormControl> Input을 감싸는 태그로 빠르게 폼을 만드는 틀이 된다.
+1. <FormLabel> Label태그
+1. <FormHelperText> 애매모호할 수 있는 Form에 대한 추가설명
