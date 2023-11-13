@@ -164,6 +164,6 @@ export default function ProtectedPage({ children }: IProtectedPageProps) {
 
 11. **Chakra, FormControl**
     Chakra UI는 Form을 단순하고 빠르게 만들수 있도록 라이브러리를 제공해준다.
-1. <FormControl> Input을 감싸는 태그로 빠르게 폼을 만드는 틀이 된다.
-1. <FormLabel> Label태그
-1. <FormHelperText> 애매모호할 수 있는 Form에 대한 추가설명
+    - <FormControl> Input을 감싸는 태그로 빠르게 폼을 만드는 틀이 된다.
+    - <FormLabel> Label태그
+    - <FormHelperText> 애매모호할 수 있는 Form에 대한 추가설명
