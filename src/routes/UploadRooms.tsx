@@ -1,10 +1,12 @@
 import {
   Box,
+  Button,
   Checkbox,
   Container,
   FormControl,
   FormHelperText,
   FormLabel,
+  Grid,
   Heading,
   Input,
   InputGroup,
@@ -17,16 +19,18 @@ import {
 import useHostOnlyPage from "../components/HostOnlyPage";
 import ProtectedPage from "../components/ProtectedPage";
 import { FaBed, FaDollarSign, FaToilet } from "react-icons/fa";
-
-/*
- 
- ---Python Django part---
- amenities
- category
-*/
+import { useQuery } from "@tanstack/react-query";
+import { getAmenities, getCategories } from "../api";
+import { IAmenity, ICategory } from "../types";
 
 export default function UploadRooms() {
+  const { data: amenities, isLoading: isAmenitiesLoading } = useQuery<
+    IAmenity[]
+  >(["amenities"], getAmenities);
   useHostOnlyPage();
+  const { data: categories, isLoading: isCategorisLoading } = useQuery<
+    ICategory[]
+  >(["categories"], getCategories);
   return (
     <ProtectedPage>
       <Box pb={40} mt={10} px={{ base: 10, lg: 40 }}>
@@ -89,6 +93,31 @@ export default function UploadRooms() {
                 What kind of rooms are you in mind?{" "}
               </FormHelperText>
             </FormControl>
+            <FormControl>
+              <FormLabel>Category</FormLabel>
+              <Select placeholder="Choose a kind">
+                {categories?.map((category) => (
+                  <option key={category.pk} value={category.pk}>
+                    {category.name}
+                  </option>
+                ))}
+              </Select>
+              <FormHelperText>What category describe your room?</FormHelperText>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Amenities</FormLabel>
+              <Grid templateColumns={"1fr 1fr"} gap={5}>
+                {amenities?.map((amenity) => (
+                  <Box key={amenity.pk}>
+                    <Checkbox>{amenity.name}</Checkbox>
+                    <FormHelperText>{amenity.description}</FormHelperText>
+                  </Box>
+                ))}
+              </Grid>
+            </FormControl>
+            <Button colorScheme={"red"} size={"lg"} width={"100%"}>
+              Upload Room
+            </Button>
           </VStack>
         </Container>
       </Box>
