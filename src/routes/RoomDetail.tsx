@@ -61,7 +61,7 @@ export default function RoomDetail() {
                   w={"100%"}
                   h={"100%"}
                   objectFit={"cover"}
-                  src={data?.photos[index].file}
+                  src={data?.photos[index]?.file}
                 />
               ) : null}
             </Skeleton>

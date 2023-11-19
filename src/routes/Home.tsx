@@ -1,4 +1,4 @@
-import { Grid } from "@chakra-ui/react";
+import { Grid, background, color } from "@chakra-ui/react";
 import Room from "../components/Room";
 import RoomSkeleton from "../components/RoomSkeleton";
 import { useQuery } from "@tanstack/react-query";
@@ -44,9 +44,7 @@ export default function Home() {
           key={room.pk}
           pk={room.pk}
           isOwner={room.is_owner}
-          imageUrl={
-            room.photos[0]?.file ?? `https://source.unsplash.com/random/450x280`
-          }
+          imageUrl={room.photos[0]?.file}
           name={room.name}
           rating={room.rating}
           city={room.city}

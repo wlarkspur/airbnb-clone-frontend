@@ -43,7 +43,7 @@ export default function Room({
       <VStack>
         <Box>
           <Box position={"relative"} overflow={"hidden"} mb={3} rounded={"2xl"}>
-            <Image minH={"280"} src={imageUrl} />
+            <Image objectFit={"cover"} minH={"280"} src={imageUrl} />
             <Button
               variant={"unstyled"}
               position={"absolute"}
@@ -53,7 +53,11 @@ export default function Room({
               color={"white"}
             >
               {isOwner ? (
-                <FaCamera size={"20px"}></FaCamera>
+                imageUrl ? (
+                  <FaCamera size={"20px"}></FaCamera>
+                ) : (
+                  <FaCamera color="black" size={"20px"}></FaCamera>
+                )
               ) : (
                 <FaRegHeart size={"20px"} />
               )}

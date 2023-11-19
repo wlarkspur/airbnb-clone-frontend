@@ -6,6 +6,7 @@ import {
   Heading,
   Input,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 
 import { useForm } from "react-hook-form";
@@ -13,23 +14,54 @@ import { useParams } from "react-router-dom";
 import ProtectedPage from "../components/ProtectedPage";
 import useHostOnlyPage from "../components/HostOnlyPage";
 import { useMutation } from "@tanstack/react-query";
-import { getUploadURL } from "../api";
+import { createPhoto, getUploadURL, uploadImage } from "../api";
 
 interface IForm {
   file: FileList;
 }
 
+interface IUploadURLResponse {
+  id: string;
+  uploadURL: string;
+}
+
 export default function UploadPhotos() {
-  const { register, handleSubmit } = useForm<IForm>();
-  const mutation = useMutation(getUploadURL, {
-    onSuccess: (data: any) => {
-      console.log(data);
+  const { register, handleSubmit, watch, reset } = useForm<IForm>();
+  const { roomPk } = useParams();
+  const toast = useToast();
+  const createPhotoMutation = useMutation(createPhoto, {
+    onSuccess: () => {
+      toast({
+        status: "success",
+        title: "Image uploaded!",
+        isClosable: true,
+        description: "Feel free to upload more images",
+      });
+      reset();
     },
   });
-  const { roomPk } = useParams();
+  const uploadImageMutation = useMutation(uploadImage, {
+    onSuccess: ({ result }: any) => {
+      if (roomPk) {
+        createPhotoMutation.mutate({
+          description: "I Love react",
+          file: `https://imagedelivery.net/vb1hJxSPrA50SRWhJFXABQ/${result.id}/public`,
+          roomPk,
+        });
+      }
+    },
+  }); //useMutation 받는 값 Object
+  const uploadURLMutation = useMutation(getUploadURL, {
+    onSuccess: (data: IUploadURLResponse) => {
+      uploadImageMutation.mutate({
+        uploadURL: data.uploadURL,
+        file: watch("file"),
+      });
+    },
+  });
   useHostOnlyPage();
   const onSubmit = (data: any) => {
-    mutation.mutate();
+    uploadURLMutation.mutate();
   };
   return (
     <ProtectedPage>
@@ -45,7 +77,16 @@ export default function UploadPhotos() {
             <FormControl>
               <Input {...register("file")} type="file" accept="image/*"></Input>
             </FormControl>
-            <Button type="submit" colorScheme="red" w={"full"}>
+            <Button
+              isLoading={
+                createPhotoMutation.isLoading ||
+                uploadImageMutation.isLoading ||
+                uploadURLMutation.isLoading
+              }
+              type="submit"
+              colorScheme="red"
+              w={"full"}
+            >
               Upload photos
             </Button>
           </VStack>
