@@ -3,11 +3,12 @@ import type { Value } from "react-calendar/dist/cjs/shared/types";
 import "react-calendar/dist/Calendar.css";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getRoom, getRoomReviews } from "../api";
+import { checkBooking, getRoom, getRoomReviews } from "../api";
 import { IReview, IRoomDetail } from "../types";
 import {
   Avatar,
   Box,
+  Button,
   Container,
   Grid,
   GridItem,
@@ -19,8 +20,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa";
-import Month from "react-calendar/dist/cjs/YearView/Month";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Helmet } from "react-helmet";
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -28,15 +29,19 @@ export default function RoomDetail() {
   const { data: reviewsData, isLoading: isReviewsLoading } = useQuery<
     IReview[]
   >([`room`, roomPk, `reviews`], getRoomReviews);
-  const [dates, setDates] = useState<Value>();
-  useEffect(() => {
-    if (Array.isArray(dates)) {
-      const [firstDate, secondDate] = dates;
-      const checkIn = firstDate?.toJSON()?.split("T")[0];
-      const checkOut = secondDate?.toJSON()?.split("T")[0];
-      console.log(checkIn, checkOut);
+  const [dates, setDates] = useState<Date[] | undefined>();
+  const { data: checkBookingData, isLoading: isCheckingBooking } = useQuery(
+    ["check", roomPk, dates],
+    checkBooking,
+    {
+      cacheTime: 0,
+      enabled: dates !== undefined,
     }
-  }, [dates]);
+  );
+  const handleDateChange = (value: any) => {
+    setDates(value);
+  };
+  console.log(dates);
   return (
     <Box
       mt={10}
@@ -45,6 +50,9 @@ export default function RoomDetail() {
         lg: 40,
       }}
     >
+      <Helmet>
+        <title>{data ? data.name : "Loading..."}</title>
+      </Helmet>
       <Skeleton
         height={"43px"}
         width={"55%"}
@@ -162,7 +170,8 @@ export default function RoomDetail() {
         </Box>
         <Box py={10}>
           <Calendar
-            onChange={setDates}
+            locale="en-En"
+            onChange={handleDateChange}
             prev2Label={null}
             next2Label={null}
             minDate={new Date()}
@@ -170,6 +179,20 @@ export default function RoomDetail() {
             minDetail={"month"}
             selectRange
           />
+          <Button
+            isDisabled={!checkBookingData?.ok}
+            isLoading={isCheckingBooking}
+            mt={5}
+            w={"100%"}
+            colorScheme="red"
+          >
+            Make Booking
+          </Button>
+          {!isCheckingBooking && !checkBookingData?.ok ? (
+            <Text mt={5} color={"red.500"}>
+              해당 날짜 예약 불가요 ㅠㅠ
+            </Text>
+          ) : null}
         </Box>
       </Grid>
     </Box>
