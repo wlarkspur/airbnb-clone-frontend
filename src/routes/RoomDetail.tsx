@@ -2,8 +2,8 @@ import Calendar from "react-calendar";
 import type { Value } from "react-calendar/dist/cjs/shared/types";
 import "react-calendar/dist/Calendar.css";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { checkBooking, getRoom, getRoomReviews } from "../api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { checkBooking, getRoom, getRoomReviews, roomNameChange } from "../api";
 import { IReview, IRoomDetail } from "../types";
 import {
   Avatar,
@@ -15,15 +15,35 @@ import {
   HStack,
   Heading,
   Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Skeleton,
   Text,
   VStack,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { FaStar } from "react-icons/fa";
+import { FaHome, FaStar } from "react-icons/fa";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
+import useHostOnlyPage from "../components/HostOnlyPage";
+import { useForm } from "react-hook-form";
+
+interface LoginModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
 export default function RoomDetail() {
+  const toast = useToast();
+  const { register, handleSubmit } = useForm();
   const { roomPk } = useParams();
   const { isLoading, data } = useQuery<IRoomDetail>([`rooms`, roomPk], getRoom);
   const { data: reviewsData, isLoading: isReviewsLoading } = useQuery<
@@ -41,7 +61,23 @@ export default function RoomDetail() {
   const handleDateChange = (value: any) => {
     setDates(value);
   };
-  console.log(dates);
+  const roomNameChangeMutation = useMutation(roomNameChange, {
+    onSuccess: () => {
+      toast({
+        status: "success",
+        title: "방 이름 변경이 완료되었습니다.",
+        isClosable: true,
+      });
+      /* onClose(); */
+    },
+  });
+  const roomNameChangeSubmit = (data: any) => {};
+  const {
+    isOpen: isRenameOpen,
+    onClose: onRenameClose,
+    onOpen: onRenameOpen,
+  } = useDisclosure();
+  useHostOnlyPage();
   return (
     <Box
       mt={10}
@@ -59,7 +95,39 @@ export default function RoomDetail() {
         isLoaded={!isLoading}
         rounded={"md"}
       >
-        <Heading>{data?.name}</Heading>
+        <HStack>
+          <Heading>{data?.name}</Heading>
+          <Modal isOpen={isRenameOpen} onClose={onRenameClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Rename room</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody as={"form"} onSubmit={roomNameChangeSubmit}>
+                <InputGroup>
+                  <InputLeftElement
+                    children={
+                      <Box color={"gray.500"}>
+                        <FaHome />
+                      </Box>
+                    }
+                  />
+                  <Input
+                    type="text"
+                    {...register("name")}
+                    placeholder={data?.name}
+                    variant={"filled"}
+                  />
+                </InputGroup>
+                <Button type="submit" mt={4} w={"full"} colorScheme="whatsapp">
+                  Rename
+                </Button>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          <Button onClick={onRenameOpen} type="submit" size={"sm"}>
+            변경
+          </Button>
+        </HStack>
       </Skeleton>
       <Grid
         mt={8}
