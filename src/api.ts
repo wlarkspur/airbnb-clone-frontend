@@ -217,14 +217,15 @@ export const checkBooking = ({
 
 interface IRoomNameChange {
   name: string;
-  roomPk: number;
+  roomPk: string;
+  category: number | undefined;
 }
 
-export const roomNameChange = ({ name, roomPk }: IRoomNameChange) =>
+export const roomNameChange = ({ name, roomPk, category }: IRoomNameChange) =>
   instance
-    .post(
+    .put(
       `rooms/${roomPk}`,
-      { name },
+      { name, roomPk, category },
       {
         headers: {
           "X-CSRFToken": Cookie.get("csrftoken") || "",
