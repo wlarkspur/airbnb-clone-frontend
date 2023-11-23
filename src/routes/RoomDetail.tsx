@@ -27,6 +27,7 @@ import {
   Skeleton,
   Text,
   VStack,
+  background,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -35,24 +36,15 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import useHostOnlyPage from "../components/HostOnlyPage";
 import { useForm } from "react-hook-form";
-
-interface LoginModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-interface ICategory {
-  pk: number | undefined;
-}
-
-interface IRename {
-  name: string;
-  roomPk: string;
-  category: ICategory;
-}
+import RoomRenameModal from "../components/RoomRenameModal";
 
 export default function RoomDetail() {
   const toast = useToast();
-  const { register, handleSubmit, setValue } = useForm<IRename>();
+  const {
+    isOpen: isRenameOpen,
+    onClose: onRenameClose,
+    onOpen: onRenameOpen,
+  } = useDisclosure();
   const { roomPk } = useParams();
   const { isLoading, data, refetch } = useQuery<IRoomDetail>(
     [`rooms`, roomPk],
@@ -73,50 +65,15 @@ export default function RoomDetail() {
   const handleDateChange = (value: any) => {
     setDates(value);
   };
-
-  const {
-    isOpen: isRenameOpen,
-    onClose: onRenameClose,
-    onOpen: onRenameOpen,
-  } = useDisclosure();
-  const roomNameChangeMutation = useMutation(roomNameChange, {
-    onSuccess: () => {
-      toast({
-        status: "success",
-        title: "방 이름 변경이 완료되었습니다.",
-        isClosable: true,
-      });
-      onRenameClose();
-      // API 호출 후 변경된 정보 다시 가져오기
-      refetch();
-    },
-    onError: () => {
-      toast({
-        status: "error",
-        title: `Error 관리자에게 문의하세요`,
-      });
-    },
-  });
-  const [dynamicRoomPk, setDynamicRoomPk] = useState<string | undefined>();
-  // roomPk를 useParams에서 가져온뒤 roomPk값이 나타날때 dynamicRoomPk의 상태를 업데이트하여 URL에서 추출한 roomPk값을 유지한다. 그 뒤 다시 useEffect함수 내에서 useForm의 setValue함수를 통해 "roomPk"의 값을 미리 저장된 dynamicRoomPk값으로 바꿔서 roomNameChangeSubmit함수에서 api로 전달될 수 있도록 코드를 작성함.
-  useEffect(() => {
-    setDynamicRoomPk(roomPk);
-  }, [roomPk]);
-  useEffect(() => {
-    setValue("roomPk", dynamicRoomPk || "");
-  }, [dynamicRoomPk, setValue]);
-  const roomNameChangeSubmit = ({ name, roomPk }: IRename) => {
-    const category = data?.category.pk;
-    roomNameChangeMutation.mutate({ name, roomPk, category });
-  };
-
+  const { isOpen, onClose, onOpen } = useDisclosure(); //Modal 사용 예정
   useHostOnlyPage();
   return (
     <Box
+      pb={20}
       mt={10}
       px={{
         base: 10,
-        lg: 40,
+        lg: 80,
       }}
     >
       <Helmet>
@@ -130,45 +87,7 @@ export default function RoomDetail() {
       >
         <HStack>
           <Heading>{data?.name}</Heading>
-          <Modal isOpen={isRenameOpen} onClose={onRenameClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Rename room</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody
-                as={"form"}
-                onSubmit={handleSubmit(roomNameChangeSubmit)}
-              >
-                <InputGroup>
-                  <InputLeftElement
-                    children={
-                      <Box color={"gray.500"}>
-                        <FaHome />
-                      </Box>
-                    }
-                  />
-                  <Input
-                    type="text"
-                    {...register("name")}
-                    placeholder={data?.name}
-                    variant={"filled"}
-                  />
-                </InputGroup>
-                <Button
-                  type="submit"
-                  mt={4}
-                  mb={4}
-                  w={"full"}
-                  colorScheme="whatsapp"
-                >
-                  Rename
-                </Button>
-              </ModalBody>
-            </ModalContent>
-          </Modal>
-          <Button onClick={onRenameOpen} type="submit" size={"sm"}>
-            변경
-          </Button>
+          <RoomRenameModal />
         </HStack>
       </Skeleton>
       <Grid
@@ -189,12 +108,42 @@ export default function RoomDetail() {
           >
             <Skeleton isLoaded={!isLoading} h={"100%"} w={"100%"}>
               {data?.photos && data.photos.length > 0 ? (
-                <Image
-                  w={"100%"}
-                  h={"100%"}
-                  objectFit={"cover"}
-                  src={data?.photos[index]?.file}
-                />
+                <Box
+                  position={"relative"}
+                  _hover={{
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      left: 0,
+                      backgroundColor: "rgba(0, 0, 0, 0.3)", // 여기서 적절한 색상과 투명도를 설정하세요
+                    },
+                    ".overlay-button": {
+                      opacity: 1,
+                    },
+                  }}
+                  h={"full"}
+                >
+                  <Image
+                    w={"100%"}
+                    h={"100%"}
+                    objectFit={"cover"}
+                    src={data?.photos[index]?.file}
+                  />
+
+                  <Button
+                    className="overlay-button"
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    transform={"translate(-50%,-50%)"}
+                    opacity={0}
+                  >
+                    사진 변경
+                  </Button>
+                </Box>
               ) : null}
             </Skeleton>
           </GridItem>

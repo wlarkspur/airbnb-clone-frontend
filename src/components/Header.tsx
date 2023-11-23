@@ -71,7 +71,7 @@ export default function Header() {
       justifyContent={"space-between"}
       alignItems={"center"}
       py={5}
-      px={40}
+      px={80}
       direction={{
         sm: "column",
         md: "row",
