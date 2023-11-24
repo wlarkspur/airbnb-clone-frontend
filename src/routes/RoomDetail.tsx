@@ -22,6 +22,7 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Skeleton,
@@ -66,6 +67,13 @@ export default function RoomDetail() {
     setDates(value);
   };
   const { isOpen, onClose, onOpen } = useDisclosure(); //Modal 사용 예정
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
+    null
+  );
+  const onOpenModal = (index: number) => {
+    setSelectedPhotoIndex(index);
+    onOpen();
+  };
   useHostOnlyPage();
   return (
     <Box
@@ -134,6 +142,7 @@ export default function RoomDetail() {
                   />
 
                   <Button
+                    onClick={() => onOpenModal(index)}
                     className="overlay-button"
                     position="absolute"
                     top="50%"
@@ -143,6 +152,36 @@ export default function RoomDetail() {
                   >
                     사진 변경
                   </Button>
+                  <Modal
+                    motionPreset="scale"
+                    isCentered
+                    isOpen={isOpen}
+                    onClose={onClose}
+                  >
+                    <ModalOverlay bg="blackAlpha.300" backdropFilter={"auto"} />
+                    <ModalContent>
+                      <ModalHeader>
+                        <Image
+                          mb={3}
+                          rounded={"md"}
+                          src={data.photos[selectedPhotoIndex ?? 0].file}
+                        />
+                        {selectedPhotoIndex != null
+                          ? selectedPhotoIndex + 1
+                          : 0}
+                        번 / 사진을 변경합니다
+                      </ModalHeader>
+                      <ModalBody>
+                        <Input mb={1} px={1} py={1} type="file" />
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button colorScheme="whatsapp" mr={2}>
+                          확인
+                        </Button>
+                        <Button colorScheme="red">취소</Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
                 </Box>
               ) : null}
             </Skeleton>
