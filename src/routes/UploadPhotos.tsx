@@ -20,7 +20,7 @@ interface IForm {
   file: FileList;
 }
 
-interface IUploadURLResponse {
+export interface IUploadURLResponse {
   id: string;
   uploadURL: string;
 }
@@ -75,7 +75,14 @@ export default function UploadPhotos() {
             mt={10}
           >
             <FormControl>
-              <Input {...register("file")} type="file" accept="image/*"></Input>
+              <Input
+                cursor={"pointer"}
+                px={1}
+                pt={1}
+                {...register("file")}
+                type="file"
+                accept="image/*"
+              ></Input>
             </FormControl>
             <Button
               isLoading={

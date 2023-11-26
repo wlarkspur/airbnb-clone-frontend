@@ -15,22 +15,9 @@ import {
   HStack,
   Heading,
   Image,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Skeleton,
   Text,
   VStack,
-  background,
-  useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import { FaHome, FaStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
@@ -38,19 +25,17 @@ import { Helmet } from "react-helmet";
 import useHostOnlyPage from "../components/HostOnlyPage";
 import { useForm } from "react-hook-form";
 import RoomRenameModal from "../components/RoomRenameModal";
+import EditRoomDetailPhotoModal from "../components/EditRoomDetailPhotoModal";
+import useUser from "../lib/useUser";
 
 export default function RoomDetail() {
-  const toast = useToast();
-  const {
-    isOpen: isRenameOpen,
-    onClose: onRenameClose,
-    onOpen: onRenameOpen,
-  } = useDisclosure();
   const { roomPk } = useParams();
+  const { user, isLoggedIn } = useUser();
   const { isLoading, data, refetch } = useQuery<IRoomDetail>(
     [`rooms`, roomPk],
     getRoom
   );
+
   const { data: reviewsData, isLoading: isReviewsLoading } = useQuery<
     IReview[]
   >([`room`, roomPk, `reviews`], getRoomReviews);
@@ -66,15 +51,8 @@ export default function RoomDetail() {
   const handleDateChange = (value: any) => {
     setDates(value);
   };
-  const { isOpen, onClose, onOpen } = useDisclosure(); //Modal 사용 예정
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
-    null
-  );
-  const onOpenModal = (index: number) => {
-    setSelectedPhotoIndex(index);
-    onOpen();
-  };
-  useHostOnlyPage();
+  /* useHostOnlyPage(); */
+
   return (
     <Box
       pb={20}
@@ -94,8 +72,10 @@ export default function RoomDetail() {
         rounded={"md"}
       >
         <HStack>
-          <Heading>{data?.name}</Heading>
-          <RoomRenameModal />
+          <Heading display={"block"} fontSize={"3xl"} whiteSpace={"nowrap"}>
+            {data?.name}
+          </Heading>
+          {isLoggedIn && user?.is_host && <RoomRenameModal />}
         </HStack>
       </Skeleton>
       <Grid
@@ -118,6 +98,7 @@ export default function RoomDetail() {
               {data?.photos && data.photos.length > 0 ? (
                 <Box
                   position={"relative"}
+                  h={"100%"}
                   _hover={{
                     "&::before": {
                       content: '""',
@@ -132,7 +113,6 @@ export default function RoomDetail() {
                       opacity: 1,
                     },
                   }}
-                  h={"full"}
                 >
                   <Image
                     w={"100%"}
@@ -140,48 +120,13 @@ export default function RoomDetail() {
                     objectFit={"cover"}
                     src={data?.photos[index]?.file}
                   />
-
-                  <Button
-                    onClick={() => onOpenModal(index)}
-                    className="overlay-button"
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    transform={"translate(-50%,-50%)"}
-                    opacity={0}
-                  >
-                    사진 변경
-                  </Button>
-                  <Modal
-                    motionPreset="scale"
-                    isCentered
-                    isOpen={isOpen}
-                    onClose={onClose}
-                  >
-                    <ModalOverlay bg="blackAlpha.300" backdropFilter={"auto"} />
-                    <ModalContent>
-                      <ModalHeader>
-                        <Image
-                          mb={3}
-                          rounded={"md"}
-                          src={data.photos[selectedPhotoIndex ?? 0].file}
-                        />
-                        {selectedPhotoIndex != null
-                          ? selectedPhotoIndex + 1
-                          : 0}
-                        번 / 사진을 변경합니다
-                      </ModalHeader>
-                      <ModalBody>
-                        <Input mb={1} px={1} py={1} type="file" />
-                      </ModalBody>
-                      <ModalFooter>
-                        <Button colorScheme="whatsapp" mr={2}>
-                          확인
-                        </Button>
-                        <Button colorScheme="red">취소</Button>
-                      </ModalFooter>
-                    </ModalContent>
-                  </Modal>
+                  {isLoggedIn && user?.is_host && (
+                    <EditRoomDetailPhotoModal
+                      roomPk={roomPk}
+                      photo_pk={data?.photos[index]?.pk}
+                      index={index}
+                    />
+                  )}
                 </Box>
               ) : null}
             </Skeleton>

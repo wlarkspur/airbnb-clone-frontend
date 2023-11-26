@@ -1,7 +1,6 @@
 import Cookie from "js-cookie";
 import { QueryFunctionContext } from "@tanstack/react-query";
 import axios from "axios";
-import { Value } from "react-calendar/dist/cjs/shared/types";
 import { formatDate } from "./lib/utils";
 
 const instance = axios.create({
@@ -170,6 +169,21 @@ export const uploadImage = ({ file, uploadURL }: IUploadImageVariables) => {
     .then((response) => response.data);
 };
 
+export const uploadImageToChange = ({
+  file,
+  uploadURL,
+}: IUploadImageVariables) => {
+  const form = new FormData();
+  form.append("file", file[0]);
+  return axios
+    .post(uploadURL, form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((response) => response.data);
+};
+
 export interface ICreatePhotoVariables {
   description: string;
   file: string;
@@ -226,6 +240,31 @@ export const roomNameChange = ({ name, roomPk, category }: IRoomNameChange) =>
     .put(
       `rooms/${roomPk}`,
       { name, roomPk, category },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);
+
+interface IRoomPhotoChange {
+  description: string;
+  file: string;
+  roomPk: string;
+  photo_pk: number | string;
+}
+
+export const roomPhotoChange = ({
+  description,
+  file,
+  roomPk,
+  photo_pk,
+}: IRoomPhotoChange) =>
+  instance
+    .put(
+      `rooms/${roomPk}/photos-update/${photo_pk}`,
+      { description, file, roomPk, photo_pk },
       {
         headers: {
           "X-CSRFToken": Cookie.get("csrftoken") || "",

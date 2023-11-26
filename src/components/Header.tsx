@@ -19,13 +19,16 @@ import {
 import { FaAirbnb, FaMoon, FaSun } from "react-icons/fa";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useUser from "../lib/useUser";
-import { logOut } from "../api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getRoom, logOut } from "../api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef } from "react";
+import { IRoomDetail } from "../types";
 
 export default function Header() {
+  const { roomPk } = useParams();
+  const navigate = useNavigate();
   const { userLoading, user, isLoggedIn } = useUser();
   const {
     isOpen: isLoginOpen,
@@ -54,7 +57,10 @@ export default function Header() {
     },
     onSuccess: async () => {
       if (toastId.current) {
-        queryClient.refetchQueries(["me"]);
+        if (!isLoggedIn) {
+          queryClient.refetchQueries([`me`]);
+        }
+
         toast.update(toastId.current, {
           status: "success",
           title: "Done",
@@ -63,8 +69,10 @@ export default function Header() {
       }
     },
   });
+
   const onLogOut = async () => {
     mutation.mutate();
+    queryClient.refetchQueries(["me"]);
   };
   return (
     <Stack

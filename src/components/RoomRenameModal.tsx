@@ -109,10 +109,10 @@ export default function RoomRenameModal() {
             </InputGroup>
 
             <Button
+              w={"full"}
               type="submit"
               mt={4}
               mb={4}
-              w={"full"}
               colorScheme="whatsapp"
             >
               Rename
@@ -120,7 +120,7 @@ export default function RoomRenameModal() {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <Button onClick={onRenameOpen} type="submit" size={"sm"}>
+      <Button mx={1} px={1} onClick={onRenameOpen} type="submit" size={"md"}>
         변경
       </Button>
     </>

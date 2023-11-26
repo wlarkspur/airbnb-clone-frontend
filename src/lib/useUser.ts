@@ -7,6 +7,7 @@ export default function useUser() {
     retry: false,
     refetchOnWindowFocus: false,
   });
+  //const isLoggedOut = !data && !isLoading && !isError;
   return {
     userLoading: isLoading,
     user: data,
