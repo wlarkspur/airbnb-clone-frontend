@@ -272,3 +272,27 @@ export const roomPhotoChange = ({
       }
     )
     .then((response) => response.data);
+
+interface IEditAmenities {
+  roomPk: number | undefined;
+  rooms: number;
+  toilets: number;
+  category: number | undefined;
+}
+export const editAmenities = ({
+  roomPk,
+  rooms,
+  toilets,
+  category,
+}: IEditAmenities) =>
+  instance
+    .put(
+      `rooms/${roomPk}`,
+      { roomPk, rooms, toilets, category },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);

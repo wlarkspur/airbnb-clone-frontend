@@ -82,6 +82,9 @@ export default function RoomRenameModal() {
   };
   return (
     <>
+      <Button onClick={onRenameOpen} type="submit" size={"md"}>
+        변경
+      </Button>
       <Modal
         closeOnOverlayClick={false}
         isOpen={isRenameOpen}
@@ -120,9 +123,6 @@ export default function RoomRenameModal() {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <Button mx={1} px={1} onClick={onRenameOpen} type="submit" size={"md"}>
-        변경
-      </Button>
     </>
   );
 }

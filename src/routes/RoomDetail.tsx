@@ -1,32 +1,66 @@
 import Calendar from "react-calendar";
 import type { Value } from "react-calendar/dist/cjs/shared/types";
 import "react-calendar/dist/Calendar.css";
-import { useParams } from "react-router-dom";
+import { Form, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { checkBooking, getRoom, getRoomReviews, roomNameChange } from "../api";
+import {
+  checkBooking,
+  editAmenities,
+  getRoom,
+  getRoomReviews,
+  roomNameChange,
+} from "../api";
 import { IReview, IRoomDetail } from "../types";
 import {
   Avatar,
   Box,
   Button,
+  ButtonGroup,
   Container,
+  FocusLock,
+  FormControl,
+  FormLabel,
   Grid,
   GridItem,
   HStack,
   Heading,
+  IconButton,
   Image,
+  Input,
+  InputGroup,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Popover,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverTrigger,
   Skeleton,
+  Stack,
   Text,
   VStack,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { FaHome, FaStar } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import {
+  FaEdit,
+  FaHome,
+  FaPenSquare,
+  FaSlidersH,
+  FaStar,
+} from "react-icons/fa";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import useHostOnlyPage from "../components/HostOnlyPage";
 import { useForm } from "react-hook-form";
 import RoomRenameModal from "../components/RoomRenameModal";
 import EditRoomDetailPhotoModal from "../components/EditRoomDetailPhotoModal";
 import useUser from "../lib/useUser";
+import { type } from "os";
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -48,13 +82,49 @@ export default function RoomDetail() {
       enabled: dates !== undefined,
     }
   );
+
   const handleDateChange = (value: any) => {
     setDates(value);
   };
-  /* useHostOnlyPage(); */
+  useHostOnlyPage();
+  //Amenities Edit Modal
+  interface IForm {
+    roomPk: number;
+    toilets: number;
+    rooms: number;
+    category: number | undefined;
+  }
 
+  const toast = useToast();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { register, handleSubmit, reset } = useForm<IForm>();
+  const modalOpen = () => {
+    onOpen();
+  };
+  const editAmenityMutatation = useMutation(editAmenities, {
+    onSuccess: () => {
+      toast({
+        status: "success",
+        title: "Amenities Changed ✅",
+        description: "Make your room comfort! ",
+        isClosable: true,
+      });
+      refetch();
+      onClose();
+      reset();
+    },
+  });
+
+  const amenitySubmit = ({ toilets, rooms }: IForm) => {
+    const category = data?.category.pk;
+    const roomPk = data?.id;
+    console.log(roomPk);
+    editAmenityMutatation.mutate({ roomPk, toilets, rooms, category });
+  };
+  //Amenities Edit Modal
   return (
     <Box
+      w={"100%"}
       pb={20}
       mt={10}
       px={{
@@ -67,14 +137,12 @@ export default function RoomDetail() {
       </Helmet>
       <Skeleton
         height={"43px"}
-        width={"55%"}
+        width={"80%"}
         isLoaded={!isLoading}
         rounded={"md"}
       >
-        <HStack>
-          <Heading display={"block"} fontSize={"3xl"} whiteSpace={"nowrap"}>
-            {data?.name}
-          </Heading>
+        <HStack w={"100%"} whiteSpace={"nowrap"}>
+          <Heading fontSize={"3xl"}>{data?.name}</Heading>
           {isLoggedIn && user?.is_host && <RoomRenameModal />}
         </HStack>
       </Skeleton>
@@ -155,6 +223,59 @@ export default function RoomDetail() {
                   <Text>
                     {data?.rooms} room{data?.rooms === 1 ? "" : "s"}
                   </Text>
+                  {isLoggedIn && user?.is_host && (
+                    <>
+                      <Modal isOpen={isOpen} onClose={onClose}>
+                        <ModalOverlay />
+                        <ModalContent as={"form"}>
+                          <ModalHeader>Amenities Edit</ModalHeader>
+                          <ModalBody>
+                            <HStack>
+                              <FormLabel w={"15%"}>Toilets</FormLabel>
+                              <InputGroup>
+                                <Input
+                                  {...register("toilets")}
+                                  type="number"
+                                  placeholder={data?.toilets + ""}
+                                />
+                              </InputGroup>
+                            </HStack>
+                            <HStack mt={4}>
+                              <FormLabel textAlign={"center"} w={"15%"}>
+                                Rooms
+                              </FormLabel>
+                              <InputGroup>
+                                <Input
+                                  {...register("rooms")}
+                                  type="number"
+                                  placeholder={data?.rooms + ""}
+                                />
+                              </InputGroup>
+                            </HStack>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button
+                              type="submit"
+                              onClick={handleSubmit(amenitySubmit)}
+                              colorScheme="whatsapp"
+                              mr={2}
+                            >
+                              수정
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                onClose();
+                              }}
+                              colorScheme="red"
+                            >
+                              취소
+                            </Button>
+                          </ModalFooter>
+                        </ModalContent>
+                      </Modal>
+                      <Button onClick={modalOpen}>변경</Button>
+                    </>
+                  )}
                 </HStack>
               </Skeleton>
             </VStack>
