@@ -86,7 +86,7 @@ export default function RoomDetail() {
   const handleDateChange = (value: any) => {
     setDates(value);
   };
-  useHostOnlyPage();
+  /* useHostOnlyPage(); */
   //Amenities Edit Modal
   interface IForm {
     roomPk: number;
@@ -116,7 +116,7 @@ export default function RoomDetail() {
   });
 
   const amenitySubmit = ({ toilets, rooms }: IForm) => {
-    const category = data?.category.pk;
+    const category = data?.category?.pk;
     const roomPk = data?.id;
     console.log(roomPk);
     editAmenityMutatation.mutate({ roomPk, toilets, rooms, category });

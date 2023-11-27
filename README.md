@@ -164,6 +164,18 @@ export default function ProtectedPage({ children }: IProtectedPageProps) {
 
 11. **Chakra, FormControl**
     Chakra UI는 Form을 단순하고 빠르게 만들수 있도록 라이브러리를 제공해준다.
+
     - <FormControl> Input을 감싸는 태그로 빠르게 폼을 만드는 틀이 된다.
     - <FormLabel> Label태그
     - <FormHelperText> 애매모호할 수 있는 Form에 대한 추가설명
+
+12. **Uncaught TypeError: Cannot read properties of null (xxxx)**
+    RoomRenameModal 및 Amenities변경에서 발생하는 오류로
+    ```javascript
+    const category = data?.category.pk; ❌
+    ```
+    이처럼 number | null 처럼 null값일 수 있는 값에 ?를 붙이지 않아 발생하는 오류
+    ```javascript
+    const category = data?.category?.pk; ✅
+    ```
+    아래 코드처럼 ? 를 붙여줘야 해당 오류가 발생하지 않는다.

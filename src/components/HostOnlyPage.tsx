@@ -7,7 +7,7 @@ interface IHostOnlyPageProps {
 }
  */
 export default function useHostOnlyPage() {
-  const { user, userLoading } = useUser();
+  const { user, isLoggedIn, userLoading } = useUser();
   const navigate = useNavigate();
   useEffect(() => {
     if (!userLoading) {

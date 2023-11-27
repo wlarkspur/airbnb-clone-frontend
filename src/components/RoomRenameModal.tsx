@@ -21,7 +21,9 @@ import { FaHome } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { getRoom, roomNameChange } from "../api";
 import { IRoomDetail } from "../types";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import useUser from "../lib/useUser";
+import useHostOnlyPage from "./HostOnlyPage";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -38,6 +40,8 @@ export interface IRename {
 }
 
 export default function RoomRenameModal() {
+  const { user } = useUser();
+  const naviagate = useNavigate();
   const { roomPk } = useParams();
   const { register, handleSubmit, setValue } = useForm<IRename>();
   const { isLoading, data, refetch } = useQuery<IRoomDetail>(
@@ -76,9 +80,16 @@ export default function RoomRenameModal() {
   useEffect(() => {
     setValue("roomPk", dynamicRoomPk || "");
   }, [dynamicRoomPk, setValue]);
+
   const roomNameChangeSubmit = ({ name, roomPk }: IRename) => {
-    const category = data?.category.pk;
-    roomNameChangeMutation.mutate({ name, roomPk, category });
+    if (!user?.is_host) {
+      naviagate("/");
+    }
+    if (data) {
+      /* const roomPk = data?.id + ""; */
+      const category = data?.category?.pk;
+      roomNameChangeMutation.mutate({ name, roomPk, category });
+    }
   };
   return (
     <>

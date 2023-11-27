@@ -115,7 +115,7 @@ export default function EditRoomDetailPhotoModal({
     setSelectedPhotoIndex(index);
     onOpen();
   };
-  useHostOnlyPage();
+  /* useHostOnlyPage(); */
   return (
     <>
       <LightMode>
