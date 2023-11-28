@@ -219,8 +219,8 @@ export const checkBooking = ({
       : [dates, dates];
 
     const checkIn = formatDate(firstDate);
-
     const checkOut = formatDate(secondDate);
+    /* console.log(checkIn, "-", checkOut); */
     return instance
       .get(
         `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`
@@ -289,6 +289,31 @@ export const editAmenities = ({
     .put(
       `rooms/${roomPk}`,
       { roomPk, rooms, toilets, category },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);
+
+interface IMakeBooking {
+  roomPk: string | undefined;
+  check_in: string | undefined;
+  check_out: string | undefined;
+  guests: number;
+}
+
+export const makeBooking = ({
+  roomPk,
+  check_in,
+  check_out,
+  guests,
+}: IMakeBooking) =>
+  instance
+    .post(
+      `rooms/${roomPk}/bookings`,
+      { roomPk, check_in, check_out, guests },
       {
         headers: {
           "X-CSRFToken": Cookie.get("csrftoken") || "",

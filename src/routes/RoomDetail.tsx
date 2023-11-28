@@ -3,13 +3,7 @@ import type { Value } from "react-calendar/dist/cjs/shared/types";
 import "react-calendar/dist/Calendar.css";
 import { Form, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  checkBooking,
-  editAmenities,
-  getRoom,
-  getRoomReviews,
-  roomNameChange,
-} from "../api";
+import { checkBooking, getRoom, getRoomReviews, makeBooking } from "../api";
 import { IReview, IRoomDetail } from "../types";
 import {
   Avatar,
@@ -28,6 +22,8 @@ import {
   Image,
   Input,
   InputGroup,
+  InputLeftAddon,
+  InputLeftElement,
   Modal,
   ModalBody,
   ModalContent,
@@ -46,22 +42,17 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import {
-  FaEdit,
-  FaHome,
-  FaPenSquare,
-  FaSlidersH,
-  FaStar,
-} from "react-icons/fa";
-import React, { useEffect, useState } from "react";
+import { FaStar, FaUser } from "react-icons/fa";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import useHostOnlyPage from "../components/HostOnlyPage";
 import { useForm } from "react-hook-form";
 import RoomRenameModal from "../components/RoomRenameModal";
 import EditRoomDetailPhotoModal from "../components/EditRoomDetailPhotoModal";
 import useUser from "../lib/useUser";
-import { type } from "os";
 import EditRoomAndToiletsModal from "../components/EditRoomAndToiletsModal";
+import { formatDate } from "../lib/utils";
+import BookingConfirmModal from "../components/BookingConfirmModal";
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -70,7 +61,6 @@ export default function RoomDetail() {
     [`rooms`, roomPk],
     getRoom
   );
-
   const { data: reviewsData, isLoading: isReviewsLoading } = useQuery<
     IReview[]
   >([`room`, roomPk, `reviews`], getRoomReviews);
@@ -88,9 +78,10 @@ export default function RoomDetail() {
     setDates(value);
   };
   /* useHostOnlyPage(); */
-  //Amenities Edit Modal
+  //Make booking
 
-  //Amenities Edit Modal
+  //Make booking
+
   return (
     <Box
       w={"100%"}
@@ -262,15 +253,12 @@ export default function RoomDetail() {
             minDetail={"month"}
             selectRange
           />
-          <Button
-            isDisabled={!checkBookingData?.ok}
-            isLoading={isCheckingBooking}
-            mt={5}
-            w={"100%"}
-            colorScheme="red"
-          >
-            Make Booking
-          </Button>
+          <BookingConfirmModal
+            data={data}
+            dates={dates}
+            checkBookingData={checkBookingData}
+            isCheckingBooking={isCheckingBooking}
+          />
           {!isCheckingBooking && !checkBookingData?.ok ? (
             <Text mt={5} color={"red.500"}>
               해당 날짜 예약 불가요 ㅠㅠ
