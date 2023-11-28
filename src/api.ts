@@ -275,8 +275,8 @@ export const roomPhotoChange = ({
 
 interface IEditAmenities {
   roomPk: number | undefined;
-  rooms: number;
-  toilets: number;
+  rooms: string | undefined;
+  toilets: string | undefined;
   category: number | undefined;
 }
 export const editAmenities = ({

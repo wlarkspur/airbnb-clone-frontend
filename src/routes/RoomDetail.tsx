@@ -61,6 +61,7 @@ import RoomRenameModal from "../components/RoomRenameModal";
 import EditRoomDetailPhotoModal from "../components/EditRoomDetailPhotoModal";
 import useUser from "../lib/useUser";
 import { type } from "os";
+import EditRoomAndToiletsModal from "../components/EditRoomAndToiletsModal";
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -88,39 +89,7 @@ export default function RoomDetail() {
   };
   /* useHostOnlyPage(); */
   //Amenities Edit Modal
-  interface IForm {
-    roomPk: number;
-    toilets: number;
-    rooms: number;
-    category: number | undefined;
-  }
 
-  const toast = useToast();
-  const { isOpen, onClose, onOpen } = useDisclosure();
-  const { register, handleSubmit, reset } = useForm<IForm>();
-  const modalOpen = () => {
-    onOpen();
-  };
-  const editAmenityMutatation = useMutation(editAmenities, {
-    onSuccess: () => {
-      toast({
-        status: "success",
-        title: "Amenities Changed ✅",
-        description: "Make your room comfort! ",
-        isClosable: true,
-      });
-      refetch();
-      onClose();
-      reset();
-    },
-  });
-
-  const amenitySubmit = ({ toilets, rooms }: IForm) => {
-    const category = data?.category?.pk;
-    const roomPk = data?.id;
-    console.log(roomPk);
-    editAmenityMutatation.mutate({ roomPk, toilets, rooms, category });
-  };
   //Amenities Edit Modal
   return (
     <Box
@@ -224,57 +193,7 @@ export default function RoomDetail() {
                     {data?.rooms} room{data?.rooms === 1 ? "" : "s"}
                   </Text>
                   {isLoggedIn && user?.is_host && (
-                    <>
-                      <Modal isOpen={isOpen} onClose={onClose}>
-                        <ModalOverlay />
-                        <ModalContent as={"form"}>
-                          <ModalHeader>Amenities Edit</ModalHeader>
-                          <ModalBody>
-                            <HStack>
-                              <FormLabel w={"15%"}>Toilets</FormLabel>
-                              <InputGroup>
-                                <Input
-                                  {...register("toilets")}
-                                  type="number"
-                                  placeholder={data?.toilets + ""}
-                                />
-                              </InputGroup>
-                            </HStack>
-                            <HStack mt={4}>
-                              <FormLabel textAlign={"center"} w={"15%"}>
-                                Rooms
-                              </FormLabel>
-                              <InputGroup>
-                                <Input
-                                  {...register("rooms")}
-                                  type="number"
-                                  placeholder={data?.rooms + ""}
-                                />
-                              </InputGroup>
-                            </HStack>
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button
-                              type="submit"
-                              onClick={handleSubmit(amenitySubmit)}
-                              colorScheme="whatsapp"
-                              mr={2}
-                            >
-                              수정
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                onClose();
-                              }}
-                              colorScheme="red"
-                            >
-                              취소
-                            </Button>
-                          </ModalFooter>
-                        </ModalContent>
-                      </Modal>
-                      <Button onClick={modalOpen}>변경</Button>
-                    </>
+                    <EditRoomAndToiletsModal data={data} refetch={refetch} />
                   )}
                 </HStack>
               </Skeleton>
