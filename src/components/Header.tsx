@@ -55,10 +55,10 @@ export default function Header() {
         position: "bottom-right",
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       if (toastId.current) {
         if (!isLoggedIn) {
-          queryClient.refetchQueries([`me`]);
+          queryClient.invalidateQueries([`me`]);
         }
 
         toast.update(toastId.current, {
@@ -67,12 +67,12 @@ export default function Header() {
           description: " See you later!",
         });
       }
+      queryClient.refetchQueries([`me`]);
     },
   });
 
   const onLogOut = async () => {
     mutation.mutate();
-    queryClient.refetchQueries(["me"]);
   };
   return (
     <Stack
