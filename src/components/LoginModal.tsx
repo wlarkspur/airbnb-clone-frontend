@@ -51,8 +51,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         status: "success",
       });
       onClose();
-      reset();
       queryClient.refetchQueries(["me"]);
+      reset();
     },
     onError: () => {
       console.log("mutation has an error ❗");

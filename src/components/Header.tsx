@@ -55,7 +55,7 @@ export default function Header() {
         position: "bottom-right",
       });
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       if (toastId.current) {
         if (!isLoggedIn) {
           queryClient.refetchQueries([`me`]);
