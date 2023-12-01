@@ -4,7 +4,10 @@ import { FaGithub, FaComment } from "react-icons/fa";
 export default function SocialLogin() {
   const kakaoParams = {
     client_id: "c52f1a0c0e398de66b07ef50a4638ed1",
-    redirect_uri: "https://coolbnb.xyz/social/kakao",
+    redirect_uri:
+      process.env.NODE_ENV === "development"
+        ? "http://127.0.0.1:3000/social/kakao"
+        : "https://coolbnb.xyz/social/kakao",
     response_type: "code",
   };
   const params = new URLSearchParams(kakaoParams).toString();
