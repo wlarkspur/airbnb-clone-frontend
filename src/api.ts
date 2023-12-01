@@ -29,7 +29,9 @@ export const getRoomReviews = ({ queryKey }: QueryFunctionContext) => {
 export const getMe = () =>
   instance
     .get(`users/me`, {
-      headers: { "X-CSRFToken": Cookie.get("csrftoken") || "" },
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
     })
     .then((response) => response.data);
 
