@@ -179,3 +179,6 @@ export default function ProtectedPage({ children }: IProtectedPageProps) {
     const category = data?.category?.pk; ✅
     ```
     아래 코드처럼 ? 를 붙여줘야 해당 오류가 발생하지 않는다.
+13. Deploy 완료
+    namecheap: domain https://coolbnb.xyz
+    render: deploy 사이트
